@@ -11,7 +11,7 @@ function collectProductId() {
 
 const uniqueId = collectProductId();
 
-//GET product id request using fetch, expects to only request product specific info
+//GET product id request using fetch, expects to only request product specific info by unique id var
 async function fetchProductPage() {
     try {
         const response = await fetch(`${apiUrl}${uniqueId}`);
@@ -27,7 +27,6 @@ async function fetchProductPage() {
 }
 
 // function to insert requested product info into dom
-
 function listProductPage(productPageContainerElementClass) {
     const productPageContainerElement = document.querySelector(productPageContainerElementClass);
 
@@ -70,8 +69,8 @@ function createProductPage(productPage) {
         newColorOption.innerHTML = productPage.colors[color];
         itemColorsAvailableButton.appendChild(newColorOption);
     }
-
     
 }
 
+//function call to insert specific product info onto dom
 listProductPage('.item');
