@@ -74,3 +74,76 @@ function createProductPage(productPage) {
 
 //function call to insert specific product info onto dom
 listProductPage('.item');
+
+
+////// code below to deal with adding products to local storage(cart)
+
+// class to create cartItems obj
+class cartItem {
+  constructor(productId, quantity, color) {
+    this.productId = productId;
+    this.quantity = quantity;
+    this.color = color;
+  }
+}
+
+//function to create cart Item to be stored, returns a cartItem obj with quantity, color and product id
+function createCartItem() {
+  const itemColor = document.getElementById("colors").value;
+  const itemQuantity = parseInt(document.getElementById("quantity").value);
+  if (itemColor !== "--Please, select a color --" && itemQuantity !== 0) {
+    let newCartItem = new cartItem(uniqueId, itemQuantity, itemColor);
+    return newCartItem;
+  }
+}
+
+//function to retrieve key of stored cart from local storage, returns cart info already parsed
+function retrieveCart(keyToFetch) {
+  let cartArray = JSON.parse(localStorage.getItem(keyToFetch));
+  return cartArray;
+}
+
+//function to stringify array to be passed into local storage
+function stringifyArray(arrayToStringify) {
+  let stringifiedArray = JSON.stringify(arrayToStringify);
+  return stringifiedArray;
+}
+
+// event listener to add cart button, assumes that color and quantity already chosen so can be properly added to cart
+document.getElementById("addToCart").addEventListener("click", () => {
+  let currentCart = retrieveCart("myCart");
+  let currentCartItem = createCartItem();
+
+  if (currentCart === null) {
+    let myCart = [];
+    myCart.push(currentCartItem);
+    localStorage.setItem("myCart", stringifyArray(myCart));
+  }
+
+  if (currentCart !== null) {
+    var productMatchIndex = currentCart.findIndex(
+      currentCart => currentCart.color === currentCartItem.color
+    );
+    console.log(productMatchIndex);
+    if (productMatchIndex === -1) {
+      // case that current color+ product id do not exist in array
+      currentCart.push(currentCartItem);
+    } else {
+      //case that current color is already in array
+      if (currentCart[productMatchIndex].color === currentCartItem.color) {
+        // if same color exists add to existing quantity
+        currentCart[productMatchIndex].quantity += currentCartItem.quantity;
+      } else {
+        //
+        currentCart.push(currentCartItem);
+      }
+    }
+    localStorage.setItem("myCart", stringifyArray(currentCart));
+  }
+
+  console.log(localStorage.getItem("myCart"));
+});
+
+
+localStorage.clear();
+
