@@ -80,10 +80,16 @@ listProductPage('.item');
 
 // class to create cartItems obj
 class cartItem {
-  constructor(productId, quantity, color) {
+  constructor(productId, quantity, color, src, alt, title, price) {
     this.productId = productId;
     this.quantity = quantity;
     this.color = color;
+    //
+    this.src = src;
+    this.alt = alt;
+    this.title = title;
+    this.price = price;
+    //
   }
 }
 
@@ -91,8 +97,14 @@ class cartItem {
 function createCartItem() {
   const itemColor = document.getElementById("colors").value;
   const itemQuantity = parseInt(document.getElementById("quantity").value);
+  //
+  const itemSource = document.querySelector('.item__img').querySelector('img').getAttribute('src');
+  const itemAlt = document.querySelector('.item__img').querySelector('img').getAttribute('alt');
+  const itemTitle = document.getElementById('title').innerHTML;
+  const itemPrice = document.getElementById('price').innerHTML;
+  //
   if (itemColor !== "--Please, select a color --" && itemQuantity !== 0) {
-    let newCartItem = new cartItem(uniqueId, itemQuantity, itemColor);
+    let newCartItem = new cartItem(uniqueId, itemQuantity, itemColor, itemSource, itemAlt, itemTitle, itemPrice);
     return newCartItem;
   }
 }
@@ -124,26 +136,20 @@ document.getElementById("addToCart").addEventListener("click", () => {
     var productMatchIndex = currentCart.findIndex(
       currentCart => currentCart.color === currentCartItem.color
     );
-    console.log(productMatchIndex);
+    // console.log(productMatchIndex);
     if (productMatchIndex === -1) {
-      // case that current color+ product id do not exist in array
+      // case that current color + product id do not exist in array
       currentCart.push(currentCartItem);
     } else {
-      //case that current color is already in array
-      if (currentCart[productMatchIndex].color === currentCartItem.color) {
-        // if same color exists add to existing quantity
-        currentCart[productMatchIndex].quantity += currentCartItem.quantity;
-      } else {
-        //
-        currentCart.push(currentCartItem);
-      }
+      //case that current color is already in array so add to quantity
+      currentCart[productMatchIndex].quantity += currentCartItem.quantity;
     }
     localStorage.setItem("myCart", stringifyArray(currentCart));
   }
 
-  console.log(localStorage.getItem("myCart"));
+//   console.log(localStorage.getItem("myCart"));
 });
 
 
-localStorage.clear();
+// localStorage.clear();
 
