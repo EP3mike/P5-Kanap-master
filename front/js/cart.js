@@ -147,5 +147,118 @@ itemDeleteButtons.forEach(itemDeleteButton => {
     });
 });
 
+// contact object holding all inputs from cart order form
+class cartContact {
+  constructor(firstName, lastName, address, city, email) {
+    this.firstName = firstName;
+    this.lastName = lastName; 
+    this.address = address;
+    this.city = city;
+    this.email = email;
+  }
+}
+
+// regular expression variable to check email inputs against 
+const emailRegEx = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
+
+// regular expression variable to check normal inputs against 
+const regEx = new RegExp('[A-Za-z]|[0-9]');
+
+//function to check if input follows email regEx, returns test value boolean
+function isEmailRegEx (emailToTest) {
+    let result = emailRegEx.test(emailToTest);
+    console.log(result);
+    return result;
+}
+
+// function to check if input follows regEx, returns test value boolean
+function isRegEx(inputToTest) {
+    let result = regEx.test(inputToTest);
+    return result;
+}
+
+//function to collect first name input, returns first name string after reg check
+function collectFirstName() {
+    let firstName = document.getElementById('firstName').value;
+    let errorMsg = document.getElementById('firstNameErrorMsg');
+    if(isRegEx(firstName)) {
+        errorMsg.remove();
+        return firstName;
+    }
+    else {
+        errorMsg.innerHTML = "Please input your first name!";
+    }
+}
+
+//function to collect last name input, returns last name string after reg check
+function collectLastName() {
+    let lastName = document.getElementById('lastName').value;
+    let errorMsg = document.getElementById('lastNameErrorMsg');
+    if(isRegEx(lastName)) {
+        errorMsg.remove();
+        return lastName;
+    }
+    else {
+        errorMsg.innerHTML = "Please input your last name!";
+    }
+}
+
+// function to collect address input, returns address string after reg check
+function collectAddress() {
+    let address = document.getElementById('address').value;
+    let errorMsg = document.getElementById('addressErrorMsg');
+    if(isRegEx(address)) {
+        errorMsg.remove();
+        return address;
+    }
+    else {
+        errorMsg.innerHTML = "Please input your address!";
+    }
+}
+
+// function to collect city input, returns city string after reg check
+function collectCity() {
+    let city = document.getElementById('city').value;
+    let errorMsg = document.getElementById('cityErrorMsg');
+    if(isRegEx(city)) {
+        errorMsg.remove();
+        return city;
+    }
+    else {
+        errorMsg.innerHTML = "Please input your city!";
+    }
+}
+
+// function to collect email input, returns email string after reg check
+function collectEmail() {
+    let email = document.getElementById('email').value;
+    let errorMsg = document.getElementById('emailErrorMsg');
+    if(isRegEx(email)) {
+        errorMsg.remove();
+        return email;
+    }
+    else {
+        errorMsg.innerHTML = "Please input your email!";
+    }
+}
+
+// function to create cartContact obj to send back to server, returns cartContact instance
+function createCartContact() {
+    let contactFirstName = collectFirstName();
+    let contactLastName = collectLastName();
+    let contactAddress = collectAddress();
+    let contactCity = collectCity();
+    let contactEmail = collectEmail();
+    
+    let newCartContact = new cartContact(contactFirstName , contactLastName , contactAddress, contactCity, contactEmail);
+    return newCartContact;
+}
+
+// order button event listener 
+document.getElementById('order').addEventListener('click', function(event) {
+    event.preventDefault();
+    let test = createCartContact();
+    console.log(test);
+});
 
 
