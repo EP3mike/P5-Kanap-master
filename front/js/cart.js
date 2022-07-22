@@ -112,8 +112,40 @@ displayCartItems('cart__items' , recapTable);
 //function call to display cart price and total articles
 displayCartPrice(recapTable);
 
-//add event listener to quantity selector
-// document.getElementsByClassName('').addEventListener('change', function() {
-//     let selectedQuantity = '';
-// }
-// , true);
+//add event listener to quantity selector, using node list of all itemQuantity classes
+const itemInputSelectors = document.querySelectorAll(".itemQuantity");
+itemInputSelectors.forEach(itemInputSelector => {
+    itemInputSelector.addEventListener('change', function () {
+        let updatedQuantity = parseInt(itemInputSelector.value);
+        let targetArticle = itemInputSelector.closest(".cart__item");
+        for(let x in recapTable) {
+            if(recapTable[x].productId === targetArticle.dataset.id && recapTable[x].color === targetArticle.dataset.color) {
+                recapTable[x].quantity = updatedQuantity;
+            }
+            let updatedRecapTable = JSON.stringify(recapTable);
+            localStorage.setItem('myCart', updatedRecapTable);
+        }
+        displayCartPrice(recapTable);
+    });
+});
+
+
+// add event listener to delete button, using node list of all delete btn classes
+const itemDeleteButtons = document.querySelectorAll(".deleteItem");
+itemDeleteButtons.forEach(itemDeleteButton => {
+    itemDeleteButton.addEventListener('click' , function () {
+        let targetArticle = itemDeleteButton.closest(".cart__item");
+        for(let x in recapTable) {
+            if(recapTable[x].productId === targetArticle.dataset.id && recapTable[x].color === targetArticle.dataset.color) {
+                recapTable.splice(x);
+            }
+            let updatedRecapTable = JSON.stringify(recapTable);
+            localStorage.setItem('myCart', updatedRecapTable);
+        }
+        targetArticle.remove();
+        displayCartPrice(recapTable);
+    });
+});
+
+
+
