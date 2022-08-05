@@ -254,11 +254,22 @@ function createCartContact() {
     return newCartContact;
 }
 
+//function to create product table from cart, returns an array of product id strings;
+function createProductTable() {
+    let tempArray = [];
+    for(let x in recapTable) {
+        tempArray.push(recapTable[x].productId);
+    }
+    return tempArray;
+}   
+
 // order button event listener 
 document.getElementById('order').addEventListener('click', function(event) {
     event.preventDefault();
-    let test = createCartContact();
-    console.log(test);
+    let orderForm = createCartContact();
+    let productTable = createProductTable();
+    console.log(orderForm);
+    console.log(productTable);
 });
 
 
