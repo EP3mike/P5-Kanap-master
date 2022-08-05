@@ -137,7 +137,7 @@ itemDeleteButtons.forEach(itemDeleteButton => {
         let targetArticle = itemDeleteButton.closest(".cart__item");
         for(let x in recapTable) {
             if(recapTable[x].productId === targetArticle.dataset.id && recapTable[x].color === targetArticle.dataset.color) {
-                recapTable.splice(x);
+                recapTable.splice(x,1);
             }
             let updatedRecapTable = JSON.stringify(recapTable);
             localStorage.setItem('myCart', updatedRecapTable);
