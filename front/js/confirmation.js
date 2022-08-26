@@ -6,10 +6,8 @@ function collectOrderId() {
     return orderId;
 }
 
+//function call to collect order id 
 const uniqueOrderId = collectOrderId();
-
-console.log(uniqueOrderId);
-
 
 //function to insert order id onto page, taking collected order id from search window as input
 function displayOrderId (idNumber) {
