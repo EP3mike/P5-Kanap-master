@@ -47,7 +47,7 @@ function listProducts(productContainerElementId) {
 function createProductElement(product) {
     const anchorElement = document.createElement('a');
     anchorElement.setAttribute('href', `${productPageLink}?id=${product._id}`);
-    anchorElement.setAttribute('target', '_blank');
+    // anchorElement.setAttribute('target', '_blank');
 
 
     const articleElement = document.createElement('article');
