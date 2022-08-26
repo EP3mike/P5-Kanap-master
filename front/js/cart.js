@@ -161,84 +161,74 @@ class cartContact {
 // regular expression variable to check email inputs against 
 const emailRegEx = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
 
-// regular expression variable to check normal inputs against 
-const regEx = new RegExp('[A-Za-z]|[0-9]');
-
 //function to check if input follows email regEx, returns test value boolean
 function isEmailRegEx (emailToTest) {
     let result = emailRegEx.test(emailToTest);
-    console.log(result);
     return result;
 }
 
-// function to check if input follows regEx, returns test value boolean
-function isRegEx(inputToTest) {
-    let result = regEx.test(inputToTest);
-    return result;
-}
-
-//function to collect first name input, returns first name string after reg check
+//function to collect first name input, returns first name string or error message if empty input
 function collectFirstName() {
     let firstName = document.getElementById('firstName').value;
     let errorMsg = document.getElementById('firstNameErrorMsg');
-    if(isRegEx(firstName)) {
-        errorMsg.remove();
-        return firstName;
+    if(firstName === undefined | firstName === "") {
+        errorMsg.innerHTML = "Please input your first name!";
     }
     else {
-        errorMsg.innerHTML = "Please input your first name!";
+        errorMsg.innerHTML = "";
+        return firstName;
     }
 }
 
-//function to collect last name input, returns last name string after reg check
+//function to collect last name input, returns last name string or error message if empty input
 function collectLastName() {
     let lastName = document.getElementById('lastName').value;
     let errorMsg = document.getElementById('lastNameErrorMsg');
-    if(isRegEx(lastName)) {
-        errorMsg.remove();
-        return lastName;
+    if(lastName === undefined | lastName === "") {
+        errorMsg.innerHTML = "Please input your last name!";
     }
     else {
-        errorMsg.innerHTML = "Please input your last name!";
+        errorMsg.innerHTML = "";
+        return lastName;
     }
 }
 
-// function to collect address input, returns address string after reg check
+// function to collect address input, returns address string or error message if empty input
 function collectAddress() {
     let address = document.getElementById('address').value;
     let errorMsg = document.getElementById('addressErrorMsg');
-    if(isRegEx(address)) {
-        errorMsg.remove();
-        return address;
+    if(address === undefined | address === "") {
+        errorMsg.innerHTML = "Please input your address!";
     }
     else {
-        errorMsg.innerHTML = "Please input your address!";
+        errorMsg.innerHTML = "";
+        return address;
     }
 }
 
-// function to collect city input, returns city string after reg check
+// function to collect city input, returns city string or error message if empty input
 function collectCity() {
     let city = document.getElementById('city').value;
     let errorMsg = document.getElementById('cityErrorMsg');
-    if(isRegEx(city)) {
-        errorMsg.remove();
-        return city;
+    if(city === undefined | city === "") {
+        errorMsg.innerHTML = "Please input your city!";
     }
     else {
-        errorMsg.innerHTML = "Please input your city!";
+        errorMsg.innerHTML = "";
+        return city;
     }
 }
 
-// function to collect email input, returns email string after reg check
+// function to collect email input, returns email string after reg check or error message if empty/invalid input
 function collectEmail() {
     let email = document.getElementById('email').value;
     let errorMsg = document.getElementById('emailErrorMsg');
-    if(isRegEx(email)) {
-        errorMsg.remove();
-        return email;
+    if(!isEmailRegEx(email)) {
+        errorMsg.innerHTML = "Please input a valid email!";
     }
-    else {
-        errorMsg.innerHTML = "Please input your email!";
+    else if(isEmailRegEx(email)) {
+        errorMsg.innerHTML = "";
+        return email;
     }
 }
 
@@ -249,7 +239,6 @@ function createCartContact() {
     let contactAddress = collectAddress();
     let contactCity = collectCity();
     let contactEmail = collectEmail();
-    
     let newCartContact = new cartContact(contactFirstName , contactLastName , contactAddress, contactCity, contactEmail);
     return newCartContact;
 }
@@ -263,13 +252,53 @@ function createProductTable() {
     return tempArray;
 }   
 
-// order button event listener 
-document.getElementById('order').addEventListener('click', function(event) {
+const apiUrl = 'http://localhost:3000/api/products/order'
+//fetch post request to send form data 
+async function sendPostRequest(objectToSend, arrayToSend) {
+    try {
+        let newOrder = {
+            contact: objectToSend,
+            products: arrayToSend,
+        };
+        const response = await fetch(`${apiUrl}`, {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json" 
+            },
+            body: JSON.stringify(newOrder)
+        });
+        const result = await response.json();
+        // console.log(result);
+        return result;
+    }catch(e) {
+        console.log(e);
+    }
+}
+
+//function to redirect to confirmation page using location.href 
+function redirectWindow(orderIdToAppend) {
+   let searchParams = new URLSearchParams('orderId = ');
+   searchParams.set("orderid", orderIdToAppend);
+   let url = "./confirmation.html?"+`${searchParams}`;
+   window.location.href = url;
+
+}
+
+// order button event listener to collect form data into contact obj and array of product ids
+document.getElementById('order').addEventListener('click', async function(event) {
     event.preventDefault();
-    let orderForm = createCartContact();
-    let productTable = createProductTable();
-    console.log(orderForm);
+    const orderForm = createCartContact();  
+    const productTable = createProductTable();
     console.log(productTable);
+    console.log(orderForm);
+
+    let postResult = await sendPostRequest(orderForm, productTable);
+    console.log(postResult);
+
+    redirectWindow(postResult.orderId);
+    
 });
+
+
 
 
