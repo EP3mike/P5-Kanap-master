@@ -1,50 +1,66 @@
 //retrieves our stored cart items from local storage, returns a parsed array
 const recapTable = JSON.parse(localStorage.getItem('myCart'));
 
-//function to create dom elements for item articles from myCart items
-function createCartItemArticle(itemFromCart){
-    let newArticleElement = document.createElement('article');
-    newArticleElement.className = "cart__item";
-    newArticleElement.setAttribute('data-id', itemFromCart.productId);
-    newArticleElement.setAttribute('data-color', itemFromCart.color);
+// function to create new article element for cart item
+function createArticleElement(arrayElement) {
+    let newArticle = document.createElement('article');
+    newArticle.className = "cart__item";
+    newArticle.setAttribute('data-id', arrayElement.productId);
+    newArticle.setAttribute('data-color', arrayElement.color);
+    return newArticle;
+}
 
-    let cartItemImgContainer = document.createElement('div');
-    cartItemImgContainer.className = 'cart__item__img';
-    let cartItemImg = document.createElement('img');
+// function to create img container/element and set attributes
+function createImageElement(arrayElement) {
+    let newImageContainer =   document.createElement('div');
+    newImageContainer.className = 'cart__item__img';
+    let newItemImage = document.createElement('img');
     //
-    cartItemImg.setAttribute('src',itemFromCart.src);
-    cartItemImg.setAttribute('alt', itemFromCart.alt);
+    newItemImage.setAttribute('src',arrayElement.src);
+    newItemImage.setAttribute('alt', arrayElement.alt);
     //
-    cartItemImgContainer.appendChild(cartItemImg);
-    newArticleElement.appendChild(cartItemImgContainer);
+    newImageContainer.appendChild(newItemImage);
+    return newImageContainer;
+}
 
-    let cartItemContentContainer = document.createElement('div')
-    cartItemContentContainer.className = "cart__item__content"
-    newArticleElement.appendChild(cartItemContentContainer);
+// function to create cart item description container and set class attribute
+function createItemContentContainer() {
+    let newCartContentContainer = document.createElement('div');
+    newCartContentContainer.className = "cart__item__content";
+    return newCartContentContainer;
+}
 
-    let cartItemContentDescription = document.createElement('div');
-    cartItemContentDescription.className = 'cart__item__content__description';
+// function to create cart item description container, set attributes and set inner html
+function createContentDescription(arrayElement) {
+    let newItemContentDescription = document.createElement('div');
+    newItemContentDescription.className = 'cart__item__content__description';
     let contentTitle = document.createElement('h2');
     //
-    contentTitle.innerHTML = itemFromCart.title;
+    contentTitle.innerHTML = arrayElement.title;
     //
     let contentColor = document.createElement('p');
-    contentColor.innerHTML = itemFromCart.color;
+    contentColor.innerHTML = arrayElement.color;
     let contentPrice = document.createElement('p');
     //
-    contentPrice.innerHTML = `${itemFromCart.price}€`;
+    contentPrice.innerHTML = `${arrayElement.price}€`;
     //
-    cartItemContentDescription.appendChild(contentTitle);
-    cartItemContentDescription.appendChild(contentColor);
-    cartItemContentDescription.appendChild(contentPrice);
-    cartItemContentContainer.appendChild(cartItemContentDescription);
+    newItemContentDescription.appendChild(contentTitle);
+    newItemContentDescription.appendChild(contentColor);
+    newItemContentDescription.appendChild(contentPrice);
+    return newItemContentDescription;
+}
 
-    let cartItemContentSettingsContainer = document.createElement('div');
-    cartItemContentSettingsContainer.className = 'cart__item__content__settings';
-    cartItemContentContainer.appendChild(cartItemContentSettingsContainer);
+//function to create cart item settings container and set attributes
+function createContentSettingsContainer() {
+    let newItemContentSettingsContainer = document.createElement('div');
+    newItemContentSettingsContainer.className = 'cart__item__content__settings';
+    return newItemContentSettingsContainer;
+}
 
-    let cartItemContentSettingsQuantityContainer = document.createElement('div');
-    cartItemContentSettingsQuantityContainer.className = 'cart__item__content__settings__quantity';
+// function to create cart item quantity container/element with respective attributes and inner html
+function createContentQuantitySetting(arrayElement) {
+    let newItemContentSettingsQuantityContainer = document.createElement('div');
+    newItemContentSettingsQuantityContainer.className = 'cart__item__content__settings__quantity';
     let itemQuantity = document.createElement('p');
     itemQuantity.innerHTML = 'Qté : ';
     let itemInput = document.createElement('input');
@@ -53,21 +69,46 @@ function createCartItemArticle(itemFromCart){
     itemInput.setAttribute('name', 'itemQuantity');
     itemInput.setAttribute('min', '1');
     itemInput.setAttribute('max','100');
-    itemInput.setAttribute('value', itemFromCart.quantity);
-    cartItemContentSettingsQuantityContainer.appendChild(itemQuantity);
-    cartItemContentSettingsQuantityContainer.appendChild(itemInput);
-    cartItemContentSettingsContainer.appendChild(cartItemContentSettingsQuantityContainer);
+    itemInput.setAttribute('value', arrayElement.quantity);
+    newItemContentSettingsQuantityContainer.appendChild(itemQuantity);
+    newItemContentSettingsQuantityContainer.appendChild(itemInput);
+    return newItemContentSettingsQuantityContainer;
+}
 
-    let cartItemCOntentSettingsDeleteContainer = document.createElement('div');
-    cartItemCOntentSettingsDeleteContainer.className = 'cart__item__content__settings__delete';
+// function to create cart item delete container/element with respective attributes and inner html
+function createContentDeleteSetting() {
+    let newItemContentSettingsDeleteContainer = document.createElement('div');
+    newItemContentSettingsDeleteContainer.className = 'cart__item__content__settings__delete';
     let deleteButton = document.createElement('p');
     deleteButton.className = 'deleteItem';
     deleteButton.innerHTML = 'Delete';
-    cartItemCOntentSettingsDeleteContainer.appendChild(deleteButton);
-    cartItemContentSettingsContainer.appendChild(cartItemCOntentSettingsDeleteContainer);
+    newItemContentSettingsDeleteContainer.appendChild(deleteButton);
+    return newItemContentSettingsDeleteContainer;
+}
+
+//function to create dom elements for item articles from myCart items
+function createCartItemArticle(itemFromCart){
+    let newArticleElement = createArticleElement(itemFromCart);
+ 
+    let cartItemImgContainer = createImageElement(itemFromCart);
+    newArticleElement.appendChild(cartItemImgContainer);
+
+    let cartItemContentContainer = createItemContentContainer();
+    newArticleElement.appendChild(cartItemContentContainer);
+
+    let cartItemContentDescription = createContentDescription(itemFromCart);
+    cartItemContentContainer.appendChild(cartItemContentDescription);
+
+    let cartItemContentSettingsContainer = createContentSettingsContainer();
+    cartItemContentContainer.appendChild(cartItemContentSettingsContainer);
+
+    let cartItemContentSettingsQuantityContainer = createContentQuantitySetting(itemFromCart);
+    cartItemContentSettingsContainer.appendChild(cartItemContentSettingsQuantityContainer);
+
+    let cartItemContentSettingsDeleteContainer = createContentDeleteSetting();
+    cartItemContentSettingsContainer.appendChild(cartItemContentSettingsDeleteContainer);
 
     return newArticleElement;
-
 }
 
 
